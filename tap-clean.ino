@@ -55,6 +55,7 @@ void loop() {
   prgBtn.onPress(loopPrograms);
   lvlBtn.onPress(loopLevels);
   runBtn.onPress(executeProgram);
+  runBtn.onLongPress(stopProgram, 1000);
 
   batch = createBatch(activePrg, activeLvl);
   ledCtrl(batch);
@@ -89,7 +90,7 @@ void executeProgram(){
 }
 
 void stopProgram(){
-  
+
 }
 
 
