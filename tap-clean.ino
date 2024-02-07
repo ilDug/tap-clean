@@ -4,7 +4,7 @@
 
 #include "dag-timer.h"
 #include "dag-button.h"
-#include "tab-clean-led.h"
+#include "tap-clean-led.h"
 
 //  PIN POMPE (al relay)
 const int PUMP_DET_PIN = 8;   // pin relay pompa detersivo
@@ -18,6 +18,22 @@ const int latch = 0;  // ST_CP
 const int clock = 0;  // SH_CP
 // const int enable = 0 ; // abilita tutto il registro (quando è al GND)
 
+const int RUN_PIN = 0;  // pin del bottone RUN
+DagButton runBtn(RUN_PIN);
+
+const int PRG_PIN = 0;  // pin del bottone PRG
+DagButton prgBtn(PRG_PIN);
+
+const int LVL_PIN = 0;  // pin del bottone LVL
+DagButton lvlBtn(LVL_PIN);
+
+uint8_t programs[] = { P1, P2, P3, CLN };
+uint8_t levels[] = { SM, MD, LG };
+uint8_t activeProgram = P1;
+int prg = 1; // 
+
+uint8_t activeLevel = MD;
+uint8_t defaultBatch;
 
 String version = "[v0.0.1]";
 void setup() {
@@ -30,34 +46,33 @@ void setup() {
   pinMode(data, OUTPUT);
 
   // inizializza i led
-  ledCtrl(P1, MD);
-
-
+  defaultBatch = createBatch(activeProgram, activeLevel);
+  ledCtrl(defaultBatch);
 }
-
 
 void loop() {
   delay(50);
-  ledCtrl(P1, MD);
 }
 
 
+void selectProgram() {
+  for (int i = 0; i < sizeof programs; i++) {
+    
+  }
+}
 
-/**
-Per sommare il risultato devo fare 
-- il secondo gruppo con lo scorrimento a sinistra di quatro posizioni poi devo sommare il promo gruppo
 
-uint8_t x = 0x0f << 4;
-uint8_t y = x + 0x07;
-y => 1111 0111
-*/
+/** Aggrega le informazioni sul programma di lavaggio e sul livello di dosaggio, restituendo un byte */
+uint8_t createBatch(uint8_t program, uint8_t level) {
+  uint8_t sx = level << 4;       // passa i primi 4 bit a destra del byte: LEVEL.
+  uint8_t value = sx + program;  //  aggiunge al byte le cifre di sinistra: PROGRAM
+  return value;
+}
 
 
 // scrive il valore nello SHIFT REGISTER per accendere i led
-uint8_t ledCtrl(uint8_t program, uint8_t level) {
-  uint8_t x = level << 4;
-  uint8_t value = x + program;
+uint8_t ledCtrl(uint8_t batch) {
   digitalWrite(latch, LOW);                // attiva la scrittura dei dati (quando è LOW)
-  shiftOut(data, clock, MSBFIRST, value);  // scrive i dati  (MSBFIRST è l'ordine dei dati dalla cifra che pesa di più)
+  shiftOut(data, clock, MSBFIRST, batch);  // scrive i dati  (MSBFIRST è l'ordine dei dati dalla cifra che pesa di più)
   digitalWrite(latch, HIGH);               // disabilita la scrittura dei dati (quando è HIGH)
 }

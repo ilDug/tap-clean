@@ -1,6 +1,24 @@
 #ifndef TAP_CLEAN_LED_H
 #define TAP_CLEAN_LED_H
 
+/**
+Definizione di BATCH
+un byte contenente le informazioni in questo ordine
+
+                       1 0 0 0   0 0 0 0
+ Q7 PWR            ____| | | |   | | | |
+ Q6 LVL3           ______| | |   | | | |
+ Q5 LVL2           ________| |   | | | |
+ Q4 LVL1           __________|   | | | |
+                                 | | | |
+ Q3 AMMORBIDENTE   ______________| | | |
+ Q2 IGIENIZZANTE   ________________| | |
+ Q1 ANTICALCARE    __________________| |
+ Q0 DETERSIVO      ____________________|
+*/
+
+
+
 /** LEDS
 PROGRAMMI
 PIN     LED          P1    P2    P3    CLN     (blink del singolo led)
@@ -27,18 +45,18 @@ uint8_t BLK3 = 0x08; // link dele led 4
 
 /**
 LIVELLI
-PIN     LED          SM    MD    LG    
+PIN     LED          LG    MD    SM    
 ---     ---          ---   ---   ---   
 Q4      PWR           x     x     x
-Q5      LVL1          x
+Q5      LVL3          x
 Q6      LVL2          x     x
-Q7      LVL3          x     x     x
+Q7      LVL1          x     x     x
 ---     ---          ---   ---   ---   
 HEX                  0x0F  0x0D  0x09     
 ------------------------------------------
 */
-uint8_t  SM = 0x0f; 
+uint8_t  LG = 0x0f; 
 uint8_t  MD = 0x0d;
-uint8_t  LG = 0x09;
+uint8_t  SM = 0x09;
 
 #endif
