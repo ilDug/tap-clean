@@ -4,6 +4,7 @@
 
 #include "dag-timer.h"
 #include "dag-button.h"
+#include "tab-clean-led.h"
 
 //  PIN POMPE (al relay)
 const int PUMP_DET_PIN = 8;   // pin relay pompa detersivo
@@ -16,44 +17,6 @@ const int data = 0;   // DS pin dati
 const int latch = 0;  // ST_CP
 const int clock = 0;  // SH_CP
 // const int enable = 0 ; // abilita tutto il registro (quando è al GND)
-
-/** LEDS
-PROGRAMMI
-PIN     LED          P1    P2    P3    CLN     (blink del singolo led)
----     ---          ---   ---   ---   ---
-Q0      DETERSIVO     x           x     x     (0x01)
-Q1      ANTICALCARE   x           x     x     (0x02)
-Q2      IGIENIZZANTE  x                 x     (0x04)
-Q3      AMMORBIDENTE        x           x     (0x08)
----     ---          ---   ---   ---   ---
-HEX                  0x07  0x08  0x03 0x0F
-------------------------------------------
-*/
-uint8_t P1 = 0x07; 
-uint8_t P2 = 0x08;
-uint8_t P3 = 0x03;
-uint8_t CLN = 0x0f;
-uint8_t OFF = 0x00;
-uint8_t BLK0 = 0x01;
-uint8_t BLK1 = 0x02;
-uint8_t BLK2 = 0x04;
-uint8_t BLK3 = 0x08;
-
-/**
-LIVELLI
-PIN     LED          SM    MD    LG    
----     ---          ---   ---   ---   
-Q4      PWR           x     x     x
-Q5      LVL1          x
-Q6      LVL2          x     x
-Q7      LVL3          x     x     x
----     ---          ---   ---   ---   
-HEX                  0x0F  0x0D  0x09     
-------------------------------------------
-*/
-uint8_t  SM = 0x0f;
-uint8_t  MD = 0x0d;
-uint8_t  LG = 0x09;
 
 
 String version = "[v0.0.1]";
