@@ -19,21 +19,19 @@ const int clock = 0;  // SH_CP
 // const int enable = 0 ; // abilita tutto il registro (quando è al GND)
 
 const int RUN_PIN = 0;  // pin del bottone RUN
-DagButton runBtn(RUN_PIN);
+DagButton runBtn(RUN_PIN, LOW);
 
 const int PRG_PIN = 0;  // pin del bottone PRG
-DagButton prgBtn(PRG_PIN);
+DagButton prgBtn(PRG_PIN, LOW);
 
 const int LVL_PIN = 0;  // pin del bottone LVL
-DagButton lvlBtn(LVL_PIN);
+DagButton lvlBtn(LVL_PIN, LOW);
 
 uint8_t programs[] = { P1, P2, P3, CLN };
 uint8_t levels[] = { SM, MD, LG };
-uint8_t activeProgram = P1;
-int prg = 1; // 
-
-uint8_t activeLevel = MD;
-uint8_t defaultBatch;
+uint8_t activePrg = P1;
+uint8_t activeLvl = MD;
+uint8_t batch;
 
 String version = "[v0.0.1]";
 void setup() {
@@ -45,20 +43,53 @@ void setup() {
   pinMode(latch, OUTPUT);
   pinMode(data, OUTPUT);
 
-  // inizializza i led
-  defaultBatch = createBatch(activeProgram, activeLevel);
-  ledCtrl(defaultBatch);
+  pinMode(RUN_PIN, INPUT_PULLUP);
+  pinMode(PRG_PIN, INPUT_PULLUP);
+  pinMode(LVL_PIN, INPUT_PULLUP);
+
 }
 
 void loop() {
   delay(50);
+
+  prgBtn.onPress(loopPrograms);
+  lvlBtn.onPress(loopLevels);
+  runBtn.onPress(executeProgram);
+
+  batch = createBatch(activePrg, activeLvl);
+  ledCtrl(batch);
+
+
 }
 
 
-void selectProgram() {
-  for (int i = 0; i < sizeof programs; i++) {
-    
+void loopPrograms() {
+  int n = sizeof programs;
+  for (int i = 0; i < n; i++) {
+    if (programs[i] == activePrg) {
+      activePrg = i >= (n - 1) ? programs[0] : programs[i + 1];
+      break;
+    }
   }
+}
+
+
+void loopLevels() {
+  int n = sizeof levels;
+  for (int i = 0; i < n; i++) {
+    if (levels[i] == activePrg) {
+      activeLvl = i >= (n - 1) ? levels[0] : levels[i + 1];
+      break;
+    }
+  }
+}
+
+void executeProgram(){
+
+}
+
+void stopProgram(){
+  
 }
 
 
