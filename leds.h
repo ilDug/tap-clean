@@ -64,4 +64,8 @@ const uint8_t LG = 0x0f;
 const uint8_t MD = 0x0d;
 const uint8_t SM = 0x09;
 
+
+const uint8_t programs[] = { P1, P2, P3, CLN };
+const uint8_t levels[] = { SM, MD, LG };
+
 #endif
