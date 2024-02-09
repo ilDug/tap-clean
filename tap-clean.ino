@@ -14,10 +14,10 @@
 #include "door.h"
 
 
-HX711 scale;
 Dispenser dispenser(PUMP_DET_PIN, PUMP_ANC_PIN, PUMP_IGZ_PIN, PUMP_AMM_PIN);
 Stepper motor(STP, MOTOR_PIN_1, MOTOR_PIN_2, MOTOR_PIN_3, MOTOR_PIN_4);
 Door door(&motor);
+HX711 scale;
 DagButton runBtn(RUN_BTN_PIN, LOW);
 DagButton prgBtn(PRG_BTN_PIN, LOW);
 DagButton lvlBtn(LVL_BTN_PIN, LOW);
