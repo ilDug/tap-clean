@@ -18,3 +18,13 @@ const int LVL_BTN_PIN = 4;  // pin del bottone LVL
 //SCALE
 const int SCALE_DATA_PIN = A4;
 const int SCALE_CLOCK_PIN = A5;
+
+// stepper
+const int MOTOR_PIN_1 = 0;
+const int MOTOR_PIN_2 = 0;
+const int MOTOR_PIN_3 = 0;
+const int MOTOR_PIN_4 = 0;
+
+const int STP = 200; // step per revolution del motore stepper.
+const int DOOR_LIM_SWITCH = 0;
+

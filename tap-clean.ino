@@ -10,9 +10,14 @@
 #include "leds.h"
 #include "pins.h"
 #include "dispenser.h"
+#include <Stepper.h>
+#include "door.h"
+
 
 HX711 scale;
 Dispenser dispenser(PUMP_DET_PIN, PUMP_ANC_PIN, PUMP_IGZ_PIN, PUMP_AMM_PIN);
+Stepper motor(STP, MOTOR_PIN_1, MOTOR_PIN_2, MOTOR_PIN_3, MOTOR_PIN_4);
+Door door(&motor);
 DagButton runBtn(RUN_BTN_PIN, LOW);
 DagButton prgBtn(PRG_BTN_PIN, LOW);
 DagButton lvlBtn(LVL_BTN_PIN, LOW);
@@ -23,7 +28,7 @@ bool blinking = false;
 int activePump;
 float weight;
 
-String version = "[v0.0.2]";
+String version = "[v0.1.2]";
 void setup() {
   Serial.begin(9600);
   Serial.print("Inizializzazione TAP-CLEAN ");
@@ -46,6 +51,9 @@ void setup() {
   digitalWrite(PUMP_ANC_PIN, HIGH);
   digitalWrite(PUMP_IGZ_PIN, HIGH);
   digitalWrite(PUMP_AMM_PIN, HIGH);
+
+  pinMode(DOOR_LIM_SWITCH, INPUT_PULLUP);
+  door.init(DOOR_LIM_SWITCH);
 
   scale.begin(SCALE_DATA_PIN, SCALE_CLOCK_PIN);
   scale.wait_ready();
