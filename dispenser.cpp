@@ -1,11 +1,7 @@
 #include "Arduino.h"
 #include "dispenser.h"
 
-Dispenser::Dispenser(int PUMP_DET_PIN, int PUMP_ANC_PIN, int PUMP_IGZ_PIN, int PUMP_AMM_PIN) {
-  pumps[0] = PUMP_DET_PIN;
-  pumps[1] = PUMP_ANC_PIN;
-  pumps[2] = PUMP_IGZ_PIN;
-  pumps[3] = PUMP_AMM_PIN;
+Dispenser::Dispenser() {
 }
 
 bool Dispenser::running() {
@@ -14,16 +10,15 @@ bool Dispenser::running() {
 
 void Dispenser::start(uint8_t program, uint8_t level, float _tare) {
   prg = program;
-  lvl = level;
   active = true;
-  setMultiplier();
+  multiplier = setMultiplier(level);
   tare = _tare;
 
   // legge dal programma da quale flask deve pompare
-  flasks[0] = bitRead(prg, DETERSIVO);
-  flasks[1] = bitRead(prg, ANTICALCARE);
-  flasks[2] = bitRead(prg, IGIENIZZANTE);
-  flasks[3] = bitRead(prg, AMMORBIDENTE);
+  flasks[DETERSIVO] = bitRead(prg, DETERSIVO);
+  flasks[ANTICALCARE] = bitRead(prg, ANTICALCARE);
+  flasks[IGIENIZZANTE] = bitRead(prg, IGIENIZZANTE);
+  flasks[AMMORBIDENTE] = bitRead(prg, AMMORBIDENTE);
   activeFlask = 0;  // inizializza con la prima flask
 }
 
@@ -31,13 +26,11 @@ void Dispenser::stop() {
   active = false;
 
   //ferma tutte le pompe
-  for (int i = 0; i < sizeof pumps; i++) {
-    digitalWrite(pumps[i], LOW);
-  }
+  return 0x00;
 }
 
-int Dispenser::run(float weight) {
-  if (!active) return -1;
+uint8_t Dispenser::run(float weight) {
+  if (!active) return 0x00;
 
   /** 
     seleziona ed incrementa la flask attiva di volta in volta
@@ -50,37 +43,22 @@ int Dispenser::run(float weight) {
 
   // quando ragginge il limite ferma il programma
   if (activeFlask >= sizeof flasks) {
-    stop();
-    return -1;
+    return stop();
   }
 
   float amount = weight - tare;
   bool full = ((dosages[activeFlask] * multiplier) - amount) <= 0;
 
   if (full) {
-    flasks[activeFlask] = 0;                // segna il flask come completato
-    digitalWrite(pumps[activeFlask], LOW);  // disattiva la pompa
-    tare = -1;
+    flasks[activeFlask] = 0;  // segna il flask come completato
+    return 0x00;              // disattiva la pompa
+    tare = weight;            // azzera la tara
   } else {
-    digitalWrite(pumps[activeFlask], HIGH);  // attiva la pompa
-    return activeFlask;
+    return pumps[activeFlask];  // avvia la pompa
   }
 }
 
 
-void Dispenser::setMultiplier(void) {
-  switch (lvl) {
-    case SM:
-      multiplier = 0.75;
-      break;
-    case MD:
-      multiplier = 1.0;
-      break;
-    case LG:
-      multiplier = 1.25;
-      break;
-    default:
-      multiplier = 1.0;
-      break;
-  }
+float Dispenser::setMultiplier(uint8_t level) {
+  return level * (2 / 1023);
 }

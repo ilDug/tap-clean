@@ -13,16 +13,18 @@ class Dispenser {
 private:
   // stato del programma
   bool active = false;
+
   // programma di dosaggio
   uint8_t prg = 0x00;
-  // livello di dosaggio
-  uint8_t lvl = 0x00;
+
   // moltiplicatore del dosaggio
   float multiplier = 1.0;
+
   // valore iniziale del dosaggio di ogni songolo flask
   float tare;
-  // imposta il moltiplicatore in vase al level passato icon start
-  void setMultiplier(void);
+
+  // imposta il moltiplicatore in vase al level passato con start. level da 0 a 1023.
+  float setMultiplier(uint8_t level);
 
   // elenco delle bottiglie
   enum Flask {
@@ -33,7 +35,7 @@ private:
   };
 
   // array dei pin delle pompe
-  int pumps[4];
+  int pumps[4] = { 0x01, 0x02, 0x04, 0x08 };
 
   // array che indica quali flask devno essere utilizzati  nel programma
   bool flasks[4];
@@ -50,13 +52,20 @@ private:
 
 public:
   // construtor
-  Dispenser(int PUMP_DET_PIN, int PUMP_ANC_PIN, int PUMP_IGZ_PIN, int PUMP_AMM_PIN);
-  //avvia il programma ,  settando lo stato active
+  Dispenser();
+
+  // Avvia il programma,  settando lo stato active 
+  // @param program : il programma in formato 4bit (0x0000)
+  // @param level : il livello di dosaggio in formato 8bit (da 0 a 1023)
+  // @param tare: la tara iniziale dela pesa.
   void start(uint8_t program, uint8_t level, float _tare);
+
   // ferma il programma settando lo stato active to false
   void stop(void);
-  // loop controller, restituisce l'index della pompa attiva
-  int run(float weight);
+
+  // loop controller, restituisce il codice di accensione delle pomper e dei led da passare alllo Shift Register
+  uint8_t run(float weight);
+
   // restituisce lo stato active
   bool running(void);
 };
