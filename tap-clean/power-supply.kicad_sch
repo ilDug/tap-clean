@@ -766,8 +766,8 @@
     (uuid fe77e88e-76d7-45ce-a3f3-4071267721c1)
   )
 
-  (text_box "Resistenze da calcolare in base alla tensione in ingresso.\nDiodo Zener 9V1 [max 120mA]"
-    (at 106.68 17.78 0) (size 69.85 7.62)
+  (text_box "Resistenze da calcolare in base alla tensione in ingresso.\nDiodo Zener 9V1 [max 120mA]\n+12-9.1-RtIt = 2.9V\nRt = 2.9/120 = 24.2R ~25R\nI = 2.9/25 = 116mA"
+    (at 106.68 13.97 0) (size 63.5 11.43)
     (stroke (width 0) (type default))
     (fill (type none))
     (effects (font (size 1.27 1.27)) (justify left top))
@@ -1276,7 +1276,7 @@
     (property "Reference" "R2" (at 118.11 30.48 90)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Value" "10R" (at 118.11 33.02 90)
+    (property "Value" "5R" (at 118.11 33.02 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Footprint" "Resistor_THT:R_Axial_DIN0516_L15.5mm_D5.0mm_P20.32mm_Horizontal" (at 118.11 38.608 90)
