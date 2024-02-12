@@ -1,4 +1,4 @@
-22708999943224126
+22735142671663579
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -93288,10 +93288,136 @@ Varistor VF
 0
 2
 2
-dag-lib
-dag-logo-mirror
+dag
+dag-pad
 
 
 0
+1
+1
+jst-xh-master
+JST_B2B-XH-A
+JST XH series connector, JST_B2B-XH-A
+connector jst xh
 0
+2
+2
+jst-xh-master
+JST_B3B-XH-A
+JST XH series connector, JST_B3B-XH-A
+connector jst xh
 0
+3
+3
+jst-xh-master
+JST_B4B-XH-A
+JST XH series connector, JST_B4B-XH-A
+connector jst xh
+0
+4
+4
+jst-xh-master
+JST_B5B-XH-A
+JST XH series connector, JST_B5B-XH-A
+connector jst xh
+0
+5
+5
+jst-xh-master
+JST_B6B-XH-A
+JST XH series connector, JST_B6B-XH-A
+connector jst xh
+0
+6
+6
+jst-xh-master
+JST_B7B-XH-A
+JST XH series connector, JST_B7B-XH-A
+connector jst xh
+0
+7
+7
+jst-xh-master
+JST_B8B-XH-A
+JST XH series connector, JST_B8B-XH-A
+connector jst xh
+0
+8
+8
+jst-xh-master
+JST_B9B-XH-A
+JST XH series connector, JST_B9B-XH-A
+connector jst xh
+0
+9
+9
+jst-xh-master
+JST_B10B-XH-A
+JST XH series connector, JST_B10B-XH-A
+connector jst xh
+0
+10
+10
+jst-xh-master
+JST_B11B-XH-A
+JST XH series connector, JST_B11B-XH-A
+connector jst xh
+0
+11
+11
+jst-xh-master
+JST_B12B-XH-A
+JST XH series connector, JST_B12B-XH-A
+connector jst xh
+0
+12
+12
+jst-xh-master
+JST_B13B-XH-A
+JST XH series connector, JST_B13B-XH-A
+connector jst xh
+0
+13
+13
+jst-xh-master
+JST_B14B-XH-A
+JST XH series connector, JST_B14B-XH-A
+connector jst xh
+0
+14
+14
+jst-xh-master
+JST_B15B-XH-A
+JST XH series connector, JST_B15B-XH-A
+connector jst xh
+0
+15
+15
+jst-xh-master
+JST_B16B-XH-A
+JST XH series connector, JST_B16B-XH-A
+connector jst xh
+0
+16
+16
+jst-xh-master
+JST_B17B-XH-A
+JST XH series connector, JST_B17B-XH-A
+connector jst xh
+0
+17
+17
+jst-xh-master
+JST_B18B-XH-A
+JST XH series connector, JST_B18B-XH-A
+connector jst xh
+0
+18
+18
+jst-xh-master
+JST_B20B-XH-A
+JST XH series connector, JST_B20B-XH-A
+connector jst xh
+0
+20
+20
