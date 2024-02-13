@@ -61,7 +61,7 @@ public:
   void start(uint8_t program, uint8_t level, float _tare);
 
   // ferma il programma settando lo stato active to false
-  void stop(void);
+  uint8_t stop(void);
 
   // loop controller, restituisce il codice di accensione delle pomper e dei led da passare alllo Shift Register
   uint8_t run(float weight);

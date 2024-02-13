@@ -22,7 +22,7 @@ void Dispenser::start(uint8_t program, uint8_t level, float _tare) {
   activeFlask = 0;  // inizializza con la prima flask
 }
 
-void Dispenser::stop() {
+uint8_t Dispenser::stop() {
   active = false;
 
   //ferma tutte le pompe

@@ -14,7 +14,7 @@
 #include "door.h"
 
 
-Dispenser dispenser(PUMP_DET_PIN, PUMP_ANC_PIN, PUMP_IGZ_PIN, PUMP_AMM_PIN);
+Dispenser dispenser;
 Stepper motor(STP, MOTOR_PIN_1, MOTOR_PIN_2, MOTOR_PIN_3, MOTOR_PIN_4);
 Door door(&motor);
 HX711 scale;
@@ -42,15 +42,15 @@ void setup() {
   pinMode(PRG_BTN_PIN, INPUT_PULLUP);
   pinMode(LVL_BTN_PIN, INPUT_PULLUP);
 
-  pinMode(PUMP_DET_PIN, OUTPUT);  // pin relay pompa detersivo
-  pinMode(PUMP_ANC_PIN, OUTPUT);  // pin relay pompa anticlacare
-  pinMode(PUMP_IGZ_PIN, OUTPUT);  // pin relay pompa igienizzante
-  pinMode(PUMP_AMM_PIN, OUTPUT);  // pin relay pompa ammorbidente
+  // pinMode(PUMP_DET_PIN, OUTPUT);  // pin relay pompa detersivo
+  // pinMode(PUMP_ANC_PIN, OUTPUT);  // pin relay pompa anticlacare
+  // pinMode(PUMP_IGZ_PIN, OUTPUT);  // pin relay pompa igienizzante
+  // pinMode(PUMP_AMM_PIN, OUTPUT);  // pin relay pompa ammorbidente
 
-  digitalWrite(PUMP_DET_PIN, HIGH);
-  digitalWrite(PUMP_ANC_PIN, HIGH);
-  digitalWrite(PUMP_IGZ_PIN, HIGH);
-  digitalWrite(PUMP_AMM_PIN, HIGH);
+  // digitalWrite(PUMP_DET_PIN, HIGH);
+  // digitalWrite(PUMP_ANC_PIN, HIGH);
+  // digitalWrite(PUMP_IGZ_PIN, HIGH);
+  // digitalWrite(PUMP_AMM_PIN, HIGH);
 
   pinMode(DOOR_LIM_SWITCH, INPUT_PULLUP);
   door.init(DOOR_LIM_SWITCH);
