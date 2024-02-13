@@ -1,4 +1,3 @@
-
 /**
 * Distributore di detersivi per lavatrice
 */
@@ -10,13 +9,9 @@
 #include "leds.h"
 #include "pins.h"
 #include "dispenser.h"
-#include <Stepper.h>
-#include "door.h"
 
 
 Dispenser dispenser;
-Stepper motor(STP, MOTOR_PIN_1, MOTOR_PIN_2, MOTOR_PIN_3, MOTOR_PIN_4);
-Door door(&motor);
 HX711 scale;
 DagButton runBtn(RUN_BTN_PIN, LOW);
 DagButton prgBtn(PRG_BTN_PIN, LOW);
@@ -28,7 +23,7 @@ bool blinking = false;
 int activePump;
 float weight;
 
-String version = "[v0.1.2]";
+String version = "[v1.0.1]";
 void setup() {
   Serial.begin(9600);
   Serial.print("Inizializzazione TAP-CLEAN ");
@@ -41,19 +36,6 @@ void setup() {
   pinMode(RUN_BTN_PIN, INPUT_PULLUP);
   pinMode(PRG_BTN_PIN, INPUT_PULLUP);
   pinMode(LVL_BTN_PIN, INPUT_PULLUP);
-
-  // pinMode(PUMP_DET_PIN, OUTPUT);  // pin relay pompa detersivo
-  // pinMode(PUMP_ANC_PIN, OUTPUT);  // pin relay pompa anticlacare
-  // pinMode(PUMP_IGZ_PIN, OUTPUT);  // pin relay pompa igienizzante
-  // pinMode(PUMP_AMM_PIN, OUTPUT);  // pin relay pompa ammorbidente
-
-  // digitalWrite(PUMP_DET_PIN, HIGH);
-  // digitalWrite(PUMP_ANC_PIN, HIGH);
-  // digitalWrite(PUMP_IGZ_PIN, HIGH);
-  // digitalWrite(PUMP_AMM_PIN, HIGH);
-
-  pinMode(DOOR_LIM_SWITCH, INPUT_PULLUP);
-  door.init(DOOR_LIM_SWITCH);
 
   scale.begin(SCALE_DATA_PIN, SCALE_CLOCK_PIN);
   scale.wait_ready();
