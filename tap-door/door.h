@@ -17,9 +17,10 @@ private:
 public:
   Door(Stepper* motor);
   void init(int limitSwitchPin);
-  void close();
-  void open();
-  bool closed();
+  void close(void);
+  void open(void);
+  void toggle(void);
+  bool closed(void);
 };
 
 #endif

@@ -26,3 +26,11 @@ void Door::close() {
 void Door::open() {
   motor->step(track * cw);
 }
+
+void Door::toggle() {
+  if (closed()) {
+    open();
+  } else {
+    close();
+  }
+}
