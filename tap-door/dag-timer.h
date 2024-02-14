@@ -31,12 +31,14 @@ public:
   void init(unsigned long time_duration, bool repeat);
 
   // restituisce un booleano che verifica se il periodo è scoccato.
+  // se non è ripetitivo,  restituisce true solo alla prima lettura 
+  // le successive ritorna false
   bool clock();
 
   // esegue la funzione passata come argomento allo scoccare del periodo
   void run(void (*fun)(void));
 
-  // per i timer che non si ripetono ,  indica se è già scoccato almeno un volta
+  // senon è ripetitivo, indica se è già scoccato almeno un volta
   bool exhausted();
 
 };
