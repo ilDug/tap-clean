@@ -1,5 +1,7 @@
 ._DS_Store
 .DS_Store
+.vscode/
+
 
 # Prerequisites
 *.d
