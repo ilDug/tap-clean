@@ -4,8 +4,7 @@
 
 
 #include "Arduino.h"
-// #include "pins.h"
-#include "leds.h"
+#include "cleans.h"
 
 
 class Dispenser {
@@ -26,29 +25,13 @@ private:
   // imposta il moltiplicatore in vase al level passato con start. level da 0 a 1023.
   float setMultiplier(uint8_t level);
 
-  // elenco delle bottiglie
-  enum Flask {
-    DETERSIVO = 0,
-    ANTICALCARE = 1,
-    IGIENIZZANTE = 2,
-    AMMORBIDENTE = 3
-  };
-
-  // array dei pin delle pompe
-  int pumps[4] = { 0x01, 0x02, 0x04, 0x08 };
-
   // array che indica quali flask devno essere utilizzati  nel programma
   bool flasks[4];
 
   // bottiglia attiva
   int activeFlask;
 
-  float dosages[4] = {
-    30,  // DETERSIVO
-    40,  // ANTICALCARE
-    50,  //  IGIENIZZANTE
-    60   // AMMORBIDENTE
-  };
+
 
 public:
   // construtor

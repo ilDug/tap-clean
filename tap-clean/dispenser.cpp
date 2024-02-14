@@ -26,11 +26,11 @@ uint8_t Dispenser::stop() {
   active = false;
 
   //ferma tutte le pompe
-  return 0x00;
+  return OFF;
 }
 
 uint8_t Dispenser::run(float weight) {
-  if (!active) return 0x00;
+  if (!active) return OFF;
 
   /** 
     seleziona ed incrementa la flask attiva di volta in volta
@@ -51,7 +51,7 @@ uint8_t Dispenser::run(float weight) {
 
   if (full) {
     flasks[activeFlask] = 0;  // segna il flask come completato
-    return 0x00;              // disattiva la pompa
+    return OFF;              // disattiva la pompa
     tare = weight;            // azzera la tara
   } else {
     return pumps[activeFlask];  // avvia la pompa
