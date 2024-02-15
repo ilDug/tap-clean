@@ -58,11 +58,11 @@ uint8_t Dispenser::run(float weight)
     }
 
     activeFlaskLabel = flaskLabels[activeFlask]; // imposta il label della flask attiva
-    
+
     float amount = weight - tare;                                    // calcola la quantità da dosare
     bool full = ((dosages[activeFlask] * multiplier) - amount) <= 0; // verifica se la flask è piena
 
-    completion = amount / (dosages[activeFlask] * multiplier); // calcola la percentuale di completamento
+    completion = int(100 * amount / (dosages[activeFlask] * multiplier)); // calcola la percentuale di completamento
 
     if (full)
     {

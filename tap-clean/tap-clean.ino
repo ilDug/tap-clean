@@ -14,18 +14,18 @@
 #include "dispenser.h"
 
 /** Display LCD*/
-LCD_I2C lcd(0x27, 16, 2); // SDA => A4: SCL => A5
-Dispenser dispenser;
-HX711 scale;
-DagButton runBtn(RUN_BTN_PIN, LOW);
-DagButton prgBtn(PRG_BTN_PIN, LOW);
+LCD_I2C lcd(0x27, 16, 2);           // SDA => A4: SCL => A5
+Dispenser dispenser;                // dispenser di detersivi
+HX711 scale;                        // bilancia
+DagButton runBtn(RUN_BTN_PIN, LOW); // bottone RUN
+DagButton prgBtn(PRG_BTN_PIN, LOW); // bottone PROGRAMMI
 
-uint8_t prg = P1;
-uint8_t lvl;
+uint8_t prg = P1; // programma di lavaggio
+uint8_t lvl;      // livello di dosaggio
 uint8_t pumpCode; // la pompa attiva impostata dal dispenser
-float weight;
+float weight;     // peso letto dalla bilancia
 
-String version = "[v1.0.1]";
+String version = "[v1.1.2]";
 void setup()
 {
     Serial.begin(9600);
@@ -40,12 +40,11 @@ void setup()
     pinMode(PRG_BTN_PIN, INPUT_PULLUP); // button
     pinMode(LVL_POT_PIN, INPUT);        // potenziometro;
 
-    scale.begin(SCALE_DATA_PIN, SCALE_CLOCK_PIN);
-    scale.wait_ready();
-    Serial.println("Bilancia inizializzata");
+    scale.begin(SCALE_DATA_PIN, SCALE_CLOCK_PIN); // inizializza la bilancia
+    scale.wait_ready();                          // attende che la bilancia sia pronta
+    Serial.println("Bilancia inizializzata");   // messaggio di avvenuta inizializzazione della bilancia
 
-    // LCD
-    init_lcd();
+    init_lcd(); // inizializza il display LCD
 }
 
 void loop()
@@ -61,13 +60,13 @@ void loop()
         weight = scale.read();            // legge il peso
         pumpCode = dispenser.run(weight); // passa il peso al dispenser e ottiene il codice di pompa attiva
         pumpController(pumpCode);         // gestione dele pompe
+        progress_lcd();                   // visualizza il progresso del programma
     }
     else
     {
         pumpController(OFF); // spegne tuttto
+        display_lcd();       // visualizza il programma selezionato e il livello di dosaggio
     }
-
-    display_lcd();
 }
 
 // cambia a rotazione il programma da attivare  e lo salva nella variabile globale prg
@@ -84,12 +83,14 @@ void loopPrograms()
     }
 }
 
+// esegue il programma selezionato
 void executeProgram()
 {
     weight = scale.read();
     dispenser.start(prg, lvl, weight);
 }
 
+// ferma il dispenser
 void stopProgram()
 {
     pumpController(dispenser.stop());
@@ -110,6 +111,7 @@ uint8_t pumpController(uint8_t code)
     return value;
 }
 
+// visualizza il programma selezionato e il livello di dosaggio sul display LCD
 void display_lcd()
 {
     lcd.clear();                          // cancella tutto lo schermo
@@ -125,12 +127,13 @@ void display_lcd()
     lcd.print(bar); // stampa la barra
 }
 
+// restituisce la descrizione del programma selezionato in base al codice passato
 String info_lcd(uint8_t program)
 {
     switch (program)
     {
-    case P1:    
-        return "DET + ANC + IGZ";   
+    case P1:
+        return "DET + ANC + IGZ";
         break;
     case P2:
         return "AMMORBIDENTE";
@@ -147,10 +150,23 @@ String info_lcd(uint8_t program)
     }
 }
 
+// visualizza il progresso del programma attivo sul display LCD
 void progress_lcd()
 {
+    lcd.clear();
+    lcd.home();
+    lcd.print(dispenser.activeFlaskLabel + " " + dispenser.completion + "%");
+    lcd.setCursor(0, 1);
+    char bar[16];
+    int percentage = int(dispenser.completion / 100 * 16);
+    for (int i = 0; i < percentage; i++)
+    {
+        bar[i] = '+';
+    }
+    lcd.print(bar);
 }
 
+// inizializza il display LCD con il messaggio di benvenuto
 void init_lcd()
 {
     lcd.begin();                // inizializza LCD
