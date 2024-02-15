@@ -52,6 +52,13 @@ enum Flask {
   AMMORBIDENTE = 3
 };
 
+String flaskLabels[] = {
+  "DETERSIVO",
+  "ANTICALCARE",
+  "IGIENIZZANTE",
+  "AMMORBIDENTE"
+};
+
 // dosaggi tipici in grammi.
 const float dosages[4] = {
   30,  // DETERSIVO
