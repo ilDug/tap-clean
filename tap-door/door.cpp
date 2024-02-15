@@ -19,8 +19,13 @@ void Door::init(int limitSwitchPin) {
 
 void Door::close() {
   // trova la posizione iniziale chiusa.
+  unsigned long start = millis();
   while (!closed()) {
     motor->step(1 * CCW);
+    if (millis() - start > 10000) {
+      Serial.println("Errore: non riesco a chiudere la porta.");
+      break;
+    }
   }
 }
 
