@@ -25,7 +25,7 @@ uint8_t lvl;      // livello di dosaggio
 uint8_t pumpCode; // la pompa attiva impostata dal dispenser
 float weight;     // peso letto dalla bilancia
 
-String version = "[v1.1.2]";
+String version = "[v1.1.3]";
 void setup()
 {
     Serial.begin(9600);
@@ -40,9 +40,11 @@ void setup()
     pinMode(PRG_BTN_PIN, INPUT_PULLUP); // button
     pinMode(LVL_POT_PIN, INPUT);        // potenziometro;
 
+    pinMode(BUZZ_PIN, OUTPUT); // buzzer
+
     scale.begin(SCALE_DATA_PIN, SCALE_CLOCK_PIN); // inizializza la bilancia
-    scale.wait_ready();                          // attende che la bilancia sia pronta
-    Serial.println("Bilancia inizializzata");   // messaggio di avvenuta inizializzazione della bilancia
+    scale.wait_ready();                           // attende che la bilancia sia pronta
+    Serial.println("Bilancia inizializzata");     // messaggio di avvenuta inizializzazione della bilancia
 
     init_lcd(); // inizializza il display LCD
 }
@@ -81,11 +83,13 @@ void loopPrograms()
             break;
         }
     }
+    beep(1);
 }
 
 // esegue il programma selezionato
 void executeProgram()
 {
+    beep(1, 750);
     weight = scale.read();
     dispenser.start(prg, lvl, weight);
 }
@@ -94,6 +98,7 @@ void executeProgram()
 void stopProgram()
 {
     pumpController(dispenser.stop());
+    beep(3);
 }
 
 // scrive il valore nello SHIFT REGISTER per accendere i led e le pompe.
@@ -175,6 +180,22 @@ void init_lcd()
     lcd.print("DAG TAP-CLEAN"); // messaggio di benvenuto
     lcd.setCursor(0, 1);        // passa alla seconda riga
     lcd.print(version);         // stampa
+    beep(1);                    // fa suonare il buzzer
     delay(3000);                // pausa
     lcd.clear();                // pulisce tutto lo schermo
+}
+
+// fa suonare il Buzzer per 200 ms e attende 200 ms per un numero di volte passato come argomento
+// @param n numero di volte che il buzzer suona
+// @param duration durata del suono
+void beep(int n, int duration = 300)
+{
+    int delayTime = duration;
+    for (int i = 0; i < n; i++)
+    {
+        digitalWrite(BUZZ_PIN, HIGH);
+        delay(delayTime);
+        digitalWrite(BUZZ_PIN, LOW);
+        delay(delayTime);
+    }
 }
