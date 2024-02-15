@@ -40,15 +40,17 @@ void setup()
     pinMode(TOGGLE_BTN_PIN, INPUT_PULLUP);
 
     door.init(DOOR_LIM_SWITCH);
+    Serial.println("Porta in posizione chiusa...");
+    Serial.println("TAP-DOOR ready...");
 }
 
 void loop()
 {
-
+    delay(100);
     while (distance() < LIMIT)
     { // sta fermo fino a quando non tolgo la mano
         FIRED = true;
-        delay(10);
+        delay(50);
     }
 
     if (FIRED)
@@ -70,6 +72,8 @@ float distance()
     digitalWrite(TRIGGER_PIN, HIGH);
     unsigned long time = pulseIn(ECO_PIN, HIGH);
     float length = 0.03431 * time / 2; // 0.03431 = MACH in cm/microsec [ divido per due per chè il percorso dell'onda è andata + ritorno]
+    Serial.println("Distanza: " + String(length) + " cm");
+    return length;
 }
 
 // apri-chiudi
