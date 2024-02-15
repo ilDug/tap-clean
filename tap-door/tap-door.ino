@@ -46,11 +46,11 @@ void setup()
 
 void loop()
 {
-    delay(100);
+    delay(500);
     while (distance() < LIMIT)
     { // sta fermo fino a quando non tolgo la mano
         FIRED = true;
-        delay(50);
+        delay(100);
     }
 
     if (FIRED)

@@ -45,20 +45,13 @@ void setup()
     Serial.println("Bilancia inizializzata");
 
     // LCD
-    lcd.begin();                // inizializza LCD
-    lcd.backlight();            // accende lo sfondo
-    lcd.home();                 // si posrta in prima riga
-    lcd.print("DAG TAP-CLEAN"); // messaggio di benvenuto
-    lcd.setCursor(0, 1);        // passa alla seconda riga
-    lcd.print(version);         // stampa
-    delay(3000);                // pausa
-    lcd.clear();                // pulisce tutto lo schermo
+    init_lcd();
 }
 
 void loop()
 {
     delay(50);
-    lvl = map(analogRead(LVL_POT_PIN), 0, 1024, 1024, 0); // legge il valore del potenziometro
+    lvl = map(analogRead(LVL_POT_PIN), 0, 1024, 1024, 0); // legge il valore del potenziometro e lo inverte
     prgBtn.onPress(loopPrograms);                         // loop dei programmi alla presione del tasto
     runBtn.onPress(executeProgram);                       // bottone del RUN
     runBtn.onLongPress(stopProgram, 1000);                // STOP PROGRAMMA
@@ -119,25 +112,25 @@ uint8_t pumpController(uint8_t code)
 
 void display_lcd()
 {
-    lcd.clear();                          // cancella tutto
-    lcd.home();                           // prima riga
-    lcd.print(info_lcd(prg));             // stampa la descrizione
-    lcd.setCursor(0, 1);                  // va a capo
-    int lungh = map(lvl, 0, 1024, 1, 16); // calcola la lunghezza della barra
-    char bar[16];                         // definisce i caratteri barra
+    lcd.clear();                          // cancella tutto lo schermo
+    lcd.home();                           // prima riga e prima colonna
+    lcd.print(info_lcd(prg));             // stampa la descrizione del programma
+    lcd.setCursor(0, 1);                  // va a capo sulla seconda riga
+    int lungh = map(lvl, 0, 1024, 1, 16); // calcola la lunghezza della barra in base al valore del potenziometro
+    char bar[16];                         // definisce i caratteri barra da stampare
     for (int i = 0; i < lungh; i++)
-    { // riempie il caratteri barra
-        bar[i] = '+';
+    {                 // ciclo per la lunghezza della barra in base al valore del potenziometro
+        bar[i] = '+'; // riempie la barra con i caratteri '+'
     }
-    lcd.print(bar);
+    lcd.print(bar); // stampa la barra
 }
 
 String info_lcd(uint8_t program)
 {
     switch (program)
     {
-    case P1:
-        return "DET + ANC + IGZ";
+    case P1:    
+        return "DET + ANC + IGZ";   
         break;
     case P2:
         return "AMMORBIDENTE";
@@ -154,6 +147,18 @@ String info_lcd(uint8_t program)
     }
 }
 
-void progres_lcd()
+void progress_lcd()
 {
+}
+
+void init_lcd()
+{
+    lcd.begin();                // inizializza LCD
+    lcd.backlight();            // accende lo sfondo
+    lcd.home();                 // si posrta in prima riga
+    lcd.print("DAG TAP-CLEAN"); // messaggio di benvenuto
+    lcd.setCursor(0, 1);        // passa alla seconda riga
+    lcd.print(version);         // stampa
+    delay(3000);                // pausa
+    lcd.clear();                // pulisce tutto lo schermo
 }
