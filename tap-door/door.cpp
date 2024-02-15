@@ -3,8 +3,9 @@
 
 Door::Door(Stepper* _motor) {
   motor = _motor;
-  cw = 1;
-  ccw = cw * (-1);
+  CW = 1;
+  CCW = CW * (-1);
+  motor->setSpeed(SPEED);
 }
 
 bool Door::closed() {
@@ -19,12 +20,12 @@ void Door::init(int limitSwitchPin) {
 void Door::close() {
   // trova la posizione iniziale chiusa.
   while (!closed()) {
-    motor->step(1 * ccw);
+    motor->step(1 * CCW);
   }
 }
 
 void Door::open() {
-  motor->step(track * cw);
+  motor->step(track * CW);
 }
 
 void Door::toggle() {
