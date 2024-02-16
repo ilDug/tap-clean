@@ -12,9 +12,11 @@
 #include "cleans.h"
 #include "pins.h"
 #include "dispenser.h"
+#include "lcd.h"
 
 /** Display LCD*/
-LCD_I2C lcd(0x27, 16, 2);           // SDA => A4: SCL => A5
+LCD_I2C _lcd(0x27, 16, 2);          // SDA => A4: SCL => A5
+DagLCD lcd(&_lcd);                  // istanza del display LCD
 Dispenser dispenser;                // dispenser di detersivi
 HX711 scale;                        // bilancia
 DagButton runBtn(RUN_BTN_PIN, LOW); // bottone RUN
@@ -46,7 +48,8 @@ void setup()
     scale.wait_ready();                           // attende che la bilancia sia pronta
     Serial.println("Bilancia inizializzata");     // messaggio di avvenuta inizializzazione della bilancia
 
-    init_lcd(); // inizializza il display LCD
+    lcd.init(version); // inizializza il display LCD
+    beep(1);
 }
 
 void loop()
@@ -62,12 +65,12 @@ void loop()
         weight = scale.read();            // legge il peso
         pumpCode = dispenser.run(weight); // passa il peso al dispenser e ottiene il codice di pompa attiva
         pumpController(pumpCode);         // gestione dele pompe
-        progress_lcd();                   // visualizza il progresso del programma
+        lcd.programProgress(&dispenser);  // visualizza il progresso del programma attivo sul display LCD
     }
     else
     {
-        pumpController(OFF); // spegne tuttto
-        display_lcd();       // visualizza il programma selezionato e il livello di dosaggio
+        pumpController(OFF);    // spegne tuttto
+        lcd.mainPage(prg, lvl); // visualizza il programma selezionato e il livello di dosaggio
     }
 }
 
@@ -116,74 +119,6 @@ uint8_t pumpController(uint8_t code)
     return value;
 }
 
-// visualizza il programma selezionato e il livello di dosaggio sul display LCD
-void display_lcd()
-{
-    lcd.clear();                          // cancella tutto lo schermo
-    lcd.home();                           // prima riga e prima colonna
-    lcd.print(info_lcd(prg));             // stampa la descrizione del programma
-    lcd.setCursor(0, 1);                  // va a capo sulla seconda riga
-    int lungh = map(lvl, 0, 1024, 1, 16); // calcola la lunghezza della barra in base al valore del potenziometro
-    char bar[16];                         // definisce i caratteri barra da stampare
-    for (int i = 0; i < lungh; i++)
-    {                 // ciclo per la lunghezza della barra in base al valore del potenziometro
-        bar[i] = '+'; // riempie la barra con i caratteri '+'
-    }
-    lcd.print(bar); // stampa la barra
-}
-
-// restituisce la descrizione del programma selezionato in base al codice passato
-String info_lcd(uint8_t program)
-{
-    switch (program)
-    {
-    case P1:
-        return "DET + ANC + IGZ";
-        break;
-    case P2:
-        return "AMMORBIDENTE";
-        break;
-    case P3:
-        return "DET + ANTICALC";
-        break;
-    case CLN:
-        return "CLEAN ALL";
-        break;
-    default:
-        return "nessun PRG";
-        break;
-    }
-}
-
-// visualizza il progresso del programma attivo sul display LCD
-void progress_lcd()
-{
-    lcd.clear();
-    lcd.home();
-    lcd.print(dispenser.activeFlaskLabel + " " + dispenser.completion + "%");
-    lcd.setCursor(0, 1);
-    char bar[16];
-    int percentage = int(dispenser.completion / 100 * 16);
-    for (int i = 0; i < percentage; i++)
-    {
-        bar[i] = '+';
-    }
-    lcd.print(bar);
-}
-
-// inizializza il display LCD con il messaggio di benvenuto
-void init_lcd()
-{
-    lcd.begin();                // inizializza LCD
-    lcd.backlight();            // accende lo sfondo
-    lcd.home();                 // si posrta in prima riga
-    lcd.print("DAG TAP-CLEAN"); // messaggio di benvenuto
-    lcd.setCursor(0, 1);        // passa alla seconda riga
-    lcd.print(version);         // stampa
-    beep(1);                    // fa suonare il buzzer
-    delay(3000);                // pausa
-    lcd.clear();                // pulisce tutto lo schermo
-}
 
 // fa suonare il Buzzer per 200 ms e attende 200 ms per un numero di volte passato come argomento
 // @param n numero di volte che il buzzer suona
