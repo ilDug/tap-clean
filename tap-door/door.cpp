@@ -22,7 +22,7 @@ void Door::close() {
   unsigned long start = millis();
   while (!closed()) {
     motor->step(1 * CCW);
-    if (millis() - start > 10000) {
+    if (millis() - start > 1000) {
       Serial.println("Errore: non riesco a chiudere la porta.");
       break;
     }

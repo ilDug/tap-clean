@@ -39,6 +39,9 @@ void setup()
     pinMode(DOOR_LIM_SWITCH, INPUT_PULLUP);
     pinMode(TOGGLE_BTN_PIN, INPUT_PULLUP);
 
+    pinMode(LED_BUILTIN, OUTPUT);
+    digitalWrite(LED_BUILTIN, LOW);
+
     door.init(DOOR_LIM_SWITCH);
     Serial.println("Porta in posizione chiusa...");
     Serial.println("TAP-DOOR ready...");
@@ -47,6 +50,9 @@ void setup()
 void loop()
 {
     delay(500);
+
+    digitalWrite(LED_BUILTIN, door.closed()); // illumina il led quando la porta è chiusa
+
     while (distance() < LIMIT)
     { // sta fermo fino a quando non tolgo la mano
         FIRED = true;
