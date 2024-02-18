@@ -20,19 +20,19 @@
 
 #include <Stepper.h>
 
-const int stepsPerRevolution = 200;  // change this to fit the number of steps per revolution
+const int stepsPerRevolution = 2048;  // change this to fit the number of steps per revolution
 // for your motor
 
 
-const int MOTOR_PIN_1 = 0;
-const int MOTOR_PIN_2 = 0;
-const int MOTOR_PIN_3 = 0;
-const int MOTOR_PIN_4 = 0;
+const int MOTOR_PIN_1 = 2;
+const int MOTOR_PIN_2 = 3;
+const int MOTOR_PIN_3 = 4;
+const int MOTOR_PIN_4 = 5;
 
 // initialize the stepper library on pins 8 through 11:
 Stepper myStepper(stepsPerRevolution, MOTOR_PIN_1, MOTOR_PIN_2, MOTOR_PIN_3, MOTOR_PIN_4);
 
-int stepCount = 0;         // number of steps the motor has taken
+int stepCount = 0;  // number of steps the motor has taken
 
 void setup() {
   // initialize the serial port:
@@ -41,10 +41,11 @@ void setup() {
 
 void loop() {
   // step one step:
-  myStepper.step(1);
-  Serial.print("steps:");
-  Serial.println(stepCount);
-  stepCount++;
-  delay(500);
+  while (stepCount < stepsPerRevolution) {
+    myStepper.step(1);
+    Serial.print("steps:");
+    Serial.println(stepCount);
+    stepCount++;
+    delay(5);
+  }
 }
-

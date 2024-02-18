@@ -6,17 +6,17 @@
 #include "dag-button.h"
 
 // stepper
-const int MOTOR_PIN_1 = 0;
-const int MOTOR_PIN_2 = 0;
-const int MOTOR_PIN_3 = 0;
-const int MOTOR_PIN_4 = 0;
+const int MOTOR_PIN_1 = 2;
+const int MOTOR_PIN_2 = 4;
+const int MOTOR_PIN_3 = 3;
+const int MOTOR_PIN_4 = 5;
 
-const int TRIGGER_PIN = 0;
-const int ECO_PIN = 0;
+const int TRIGGER_PIN = 8;
+const int ECO_PIN = 9;
 
-const int STP = 200; // step per revolution del motore stepper.
-const int DOOR_LIM_SWITCH = 0;
-const int TOGGLE_BTN_PIN = 0;
+const int STP = 2048; // step per revolution del motore stepper.
+const int DOOR_LIM_SWITCH = 11;
+const int TOGGLE_BTN_PIN = A2;
 
 const int WAIT = 1000 * 1;
 const float LIMIT = 10; // cm
@@ -45,6 +45,7 @@ void setup()
     door.init(DOOR_LIM_SWITCH);
     Serial.println("Porta in posizione chiusa...");
     Serial.println("TAP-DOOR ready...");
+    delay(3000);
 }
 
 void loop()
@@ -85,5 +86,6 @@ float distance()
 // apri-chiudi
 void toggle(void)
 {
+  Serial.println("toggle button pressed");
     door.toggle();
 }
