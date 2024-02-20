@@ -27,6 +27,8 @@ uint8_t lvl;      // livello di dosaggio
 uint8_t pumpCode; // la pompa attiva impostata dal dispenser
 float weight;     // peso letto dalla bilancia
 
+void beep(int n, int duration = 300);
+
 String version = "[v1.1.3]";
 void setup()
 {
