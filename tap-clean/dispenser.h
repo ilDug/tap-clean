@@ -37,7 +37,7 @@ public:
 
   // Avvia il programma,  settando lo stato active
   // @param program : il programma in formato 4bit (0x0000)
-  // @param level : il livello di dosaggio in formato 8bit (da 0 a 1023)
+  // @param level : il livello di dosaggio from 0 to 15
   // @param tare: la tara iniziale dela pesa.
   void start(uint8_t program, uint8_t level, float _tare);
 
