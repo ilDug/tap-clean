@@ -8,32 +8,26 @@ public:
     // Constructor. Istanzia un oggetto di tipo DagPot,  ed initializza il pin del potenziometro come analog input.
     DagPot(uint8_t pin);
 
-    // Constructor. Istanzia un oggetto di tipo DagPot,  ed initializza il pin del potenziometro come analog input. Definisce direttamente la mappa dei valori di uscita minimi e massimi.
-    DagPot(uint8_t pin, float map_min, float map_max);
-
     // Constructor. Istanzia un oggetto di tipo DagPot,  ed initializza il pin del potenziometro come analog input. Definisce direttamente la mappa dei valori di uscita minimi e massimi. Definisce anche il delta di sensibilità per il cambio di valore.
-    DagPot(uint8_t pin, float map_min, float map_max, float delta);
-
-    // Destructor
-    ~DagPot();
+    DagPot(uint8_t pin, long delta);
 
     // inizializza il potenziometro, definendo la mappa dei valori di uscita minimi e massimi.(default 0-1023). Se max è minore di min,  inverte la scala di valori.
-    void init(float map_min, float map_max);
+    void init(long map_min, long map_max);
 
     // inizializza il potenziometro, definendo la mappa dei valori di uscita minimi e massimi.(default 0-1023). Se max è minore di min,  inverte la scala di valori. Definisce anche il delta di sensibilità per il cambio di valore.
-    void init(float map_min, float map_max, float delta);
+    void init(long map_min, long map_max, long delta);
 
     // imposta il delta di sensibilità per il cambio di valore.
-    void set_delta(float delta);
+    void set_delta(long delta);
 
     // restituisce ISTANTANEO il valore del potenziometro, mappato tra min e max.
-    float read(void);
+    long read(void);
 
     // restituisce ISTANTANEO il VALORE RAW del potenziometro (senza mappatura).
-    int read_raw(void);
+    long read_raw(void);
 
     // il valore memorizzato del potenziometro, mappato tra min e max.
-    float value(void);
+    long value(void);
 
     // indica se il valore è cambiato rispetto all'ultimo salvat.
     bool changed(void);
@@ -58,10 +52,10 @@ private:
     int pin;
 
     // valore minimo della mappa
-    float min;
+    long min;
 
     // valore massimo della mappa
-    float max;
+    long max;
 
     // indica se esiste un valore memorizzato
     bool STORED;
@@ -76,12 +70,11 @@ private:
     bool LOOP;
 
     // delta di sensibilità per il cambio di valore
-    float dx;
+    long dx;
 
     // imposta i valori interni della mappa
-    void set_minmax(float map_min, float map_max);
+    void set_minmax(long map_min, long map_max);
 
 };
 
-
-#endif
+#endif // DAG_POTENTIOMETER_H
