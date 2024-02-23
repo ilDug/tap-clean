@@ -24,7 +24,7 @@ void DagLCD::mainPage(uint8_t program, uint8_t level)
     lcd->home();                             // prima riga e prima colonna
     lcd->print(programDescription(program)); // stampa la descrizione del programma
     lcd->setCursor(0, 1);                    // va a capo sulla seconda riga
-    int lungh = map(level, 0, 1024, 1, 16);  // calcola la lunghezza della barra in base al valore del potenziometro
+    int lungh = level + 1;                   // calcola la lunghezza della barra in base al valore del potenziometro
     char bar[16];                            // definisce i caratteri barra da stampare
     for (int i = 0; i < lungh; i++)          // ciclo per la lunghezza della barra in base al valore del potenziometro
     {

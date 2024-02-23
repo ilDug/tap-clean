@@ -1,6 +1,7 @@
 #ifndef TAP_CLEAN_PRG_H
 #define TAP_CLEAN_PRG_H
 
+#include <Arduino.h>
 
 /**
 Definizione di BATCH
@@ -52,12 +53,6 @@ enum Flask {
   AMMORBIDENTE = 3
 };
 
-String flaskLabels[] = {
-  "DETERSIVO",
-  "ANTICALCARE",
-  "IGIENIZZANTE",
-  "AMMORBIDENTE"
-};
 
 // dosaggi tipici in grammi.
 const float dosages[4] = {
