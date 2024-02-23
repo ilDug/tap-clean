@@ -16,18 +16,16 @@
 #include "dag-potentiometer.h"
 
 /** Display LCD*/
-LCD_I2C _lcd(0x27, 16, 2);           // SDA => A4: SCL => A5
-DagLCD lcd(&_lcd);                   // istanza del display LCD
-Dispenser dispenser;                 // dispenser di detersivi
-HX711 scale;                         // bilancia
-DagButton runBtn(RUN_BTN_PIN, LOW);  // bottone RUN
-DagButton prgBtn(PRG_BTN_PIN, LOW);  // bottone PROGRAMMI
-DagPot lvlPot(LVL_POT_PIN, 0, 1024); // potenziometro per il livello di dosaggio
+LCD_I2C _lcd(0x27, 16, 2);          // SDA => A4: SCL => A5
+DagLCD lcd(&_lcd);                  // istanza del display LCD
+Dispenser dispenser;                // dispenser di detersivi
+HX711 scale;                        // bilancia
+DagButton runBtn(RUN_BTN_PIN, LOW); // bottone RUN
+DagButton prgBtn(PRG_BTN_PIN, LOW); // bottone PROGRAMMI
+DagPot lvl(LVL_POT_PIN);            // potenziometro per il livello di dosaggio
 
 uint8_t prg = P1; // programma di lavaggio
-// uint8_t lvl;      // livello di dosaggio
 uint8_t pumpCode; // la pompa attiva impostata dal dispenser
-float weight;     // peso letto dalla bilancia
 
 void beep(int n, int duration = 300);
 
@@ -44,9 +42,10 @@ void setup()
 
     pinMode(RUN_BTN_PIN, INPUT_PULLUP); // button
     pinMode(PRG_BTN_PIN, INPUT_PULLUP); // button
-    // pinMode(LVL_POT_PIN, INPUT);        // potenziometro;
 
     pinMode(BUZZ_PIN, OUTPUT); // buzzer
+
+    lvl.init(0, 15); // inizializza il potenziometro per il livello di dosaggio
 
     scale.begin(SCALE_DATA_PIN, SCALE_CLOCK_PIN); // inizializza la bilancia
     scale.wait_ready();                           // attende che la bilancia sia pronta
@@ -59,23 +58,20 @@ void setup()
 void loop()
 {
     delay(50);
-    //lvl = map(analogRead(LVL_POT_PIN), 0, 1024, 1024, 0); // legge il valore del potenziometro e lo inverte
-
-    prgBtn.onPress(loopPrograms);                         // loop dei programmi alla presione del tasto
-    runBtn.onPress(executeProgram);                       // bottone del RUN
-    runBtn.onLongPress(stopProgram, 1000);                // STOP PROGRAMMA
+    prgBtn.onPress(loopPrograms);          // loop dei programmi alla presione del tasto
+    runBtn.onPress(executeProgram);        // bottone del RUN
+    runBtn.onLongPress(stopProgram, 1000); // STOP PROGRAMMA
 
     if (dispenser.running())
-    {                                     // quando il dispenser è attivato
-        weight = scale.read();            // legge il peso
-        pumpCode = dispenser.run(weight); // passa il peso al dispenser e ottiene il codice di pompa attiva
-        pumpController(pumpCode);         // gestione dele pompe
-        lcd.programProgress(&dispenser);  // visualizza il progresso del programma attivo sul display LCD
+    {                                           // quando il dispenser è attivato
+        pumpCode = dispenser.run(scale.read()); // passa il peso al dispenser e ottiene il codice di pompa attiva
+        pumpController(pumpCode);               // gestione dele pompe
+        lcd.programProgress(&dispenser);        // visualizza il progresso del programma attivo sul display LCD
     }
     else
     {
-        pumpController(OFF);    // spegne tuttto
-        lcd.mainPage(prg, int(lvlPot.read())); // visualizza il programma selezionato e il livello di dosaggio
+        pumpController(OFF);           // spegne tuttto
+        lcd.mainPage(prg, lvl.read()); // visualizza il programma selezionato e il livello di dosaggio
     }
 }
 
@@ -98,8 +94,7 @@ void loopPrograms()
 void executeProgram()
 {
     beep(1, 750);
-    weight = scale.read();
-    dispenser.start(prg, int(lvlPot.read()), weight);
+    dispenser.start(prg, lvl.read(), scale.read());
 }
 
 // ferma il dispenser
