@@ -13,23 +13,25 @@
 #include "pins.h"
 #include "dispenser.h"
 #include "lcd.h"
+#include "dag-potentiometer.h"
 
 /** Display LCD*/
-LCD_I2C _lcd(0x27, 16, 2);          // SDA => A4: SCL => A5
-DagLCD lcd(&_lcd);                  // istanza del display LCD
-Dispenser dispenser;                // dispenser di detersivi
-HX711 scale;                        // bilancia
-DagButton runBtn(RUN_BTN_PIN, LOW); // bottone RUN
-DagButton prgBtn(PRG_BTN_PIN, LOW); // bottone PROGRAMMI
+LCD_I2C _lcd(0x27, 16, 2);           // SDA => A4: SCL => A5
+DagLCD lcd(&_lcd);                   // istanza del display LCD
+Dispenser dispenser;                 // dispenser di detersivi
+HX711 scale;                         // bilancia
+DagButton runBtn(RUN_BTN_PIN, LOW);  // bottone RUN
+DagButton prgBtn(PRG_BTN_PIN, LOW);  // bottone PROGRAMMI
+DagPot lvlPot(LVL_POT_PIN, 0, 1024); // potenziometro per il livello di dosaggio
 
 uint8_t prg = P1; // programma di lavaggio
-uint8_t lvl;      // livello di dosaggio
+// uint8_t lvl;      // livello di dosaggio
 uint8_t pumpCode; // la pompa attiva impostata dal dispenser
 float weight;     // peso letto dalla bilancia
 
 void beep(int n, int duration = 300);
 
-String version = "[v1.1.3]";
+String version = "[v1.2.3]";
 void setup()
 {
     Serial.begin(9600);
@@ -42,7 +44,7 @@ void setup()
 
     pinMode(RUN_BTN_PIN, INPUT_PULLUP); // button
     pinMode(PRG_BTN_PIN, INPUT_PULLUP); // button
-    pinMode(LVL_POT_PIN, INPUT);        // potenziometro;
+    // pinMode(LVL_POT_PIN, INPUT);        // potenziometro;
 
     pinMode(BUZZ_PIN, OUTPUT); // buzzer
 
@@ -57,7 +59,8 @@ void setup()
 void loop()
 {
     delay(50);
-    lvl = map(analogRead(LVL_POT_PIN), 0, 1024, 1024, 0); // legge il valore del potenziometro e lo inverte
+    //lvl = map(analogRead(LVL_POT_PIN), 0, 1024, 1024, 0); // legge il valore del potenziometro e lo inverte
+
     prgBtn.onPress(loopPrograms);                         // loop dei programmi alla presione del tasto
     runBtn.onPress(executeProgram);                       // bottone del RUN
     runBtn.onLongPress(stopProgram, 1000);                // STOP PROGRAMMA
@@ -72,7 +75,7 @@ void loop()
     else
     {
         pumpController(OFF);    // spegne tuttto
-        lcd.mainPage(prg, lvl); // visualizza il programma selezionato e il livello di dosaggio
+        lcd.mainPage(prg, int(lvlPot.read())); // visualizza il programma selezionato e il livello di dosaggio
     }
 }
 
@@ -96,7 +99,7 @@ void executeProgram()
 {
     beep(1, 750);
     weight = scale.read();
-    dispenser.start(prg, lvl, weight);
+    dispenser.start(prg, int(lvlPot.read()), weight);
 }
 
 // ferma il dispenser
@@ -120,7 +123,6 @@ uint8_t pumpController(uint8_t code)
 
     return value;
 }
-
 
 // fa suonare il Buzzer per 200 ms e attende 200 ms per un numero di volte passato come argomento
 // @param n numero di volte che il buzzer suona
