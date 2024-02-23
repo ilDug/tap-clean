@@ -14,6 +14,7 @@
 #include "dispenser.h"
 #include "lcd.h"
 #include "dag-potentiometer.h"
+#include "shift-register.h"
 
 /** Display LCD*/
 LCD_I2C _lcd(0x27, 16, 2);          // SDA => A4: SCL => A5
@@ -23,6 +24,7 @@ HX711 scale;                        // bilancia
 DagButton runBtn(RUN_BTN_PIN, LOW); // bottone RUN
 DagButton prgBtn(PRG_BTN_PIN, LOW); // bottone PROGRAMMI
 DagPot lvl(LVL_POT_PIN);            // potenziometro per il livello di dosaggio
+ShiftRegister pumpCtrl(clock, data, latch);
 
 uint8_t prg = P1; // programma di lavaggio
 uint8_t pumpCode; // la pompa attiva impostata dal dispenser
@@ -36,16 +38,10 @@ void setup()
     Serial.print("Inizializzazione TAP-CLEAN ");
     Serial.println(version);
 
-    pinMode(clock, OUTPUT); // SHIFT REGISTER
-    pinMode(latch, OUTPUT); // SHIFT REGISTER
-    pinMode(data, OUTPUT);  // SHIFT REGISTER
-
-    pinMode(RUN_BTN_PIN, INPUT_PULLUP); // button
-    pinMode(PRG_BTN_PIN, INPUT_PULLUP); // button
-
     pinMode(BUZZ_PIN, OUTPUT); // buzzer
 
     lvl.init(0, 15); // inizializza il potenziometro per il livello di dosaggio
+    pumpCtrl.init(); // inizializza lo shift register
 
     scale.begin(SCALE_DATA_PIN, SCALE_CLOCK_PIN); // inizializza la bilancia
     scale.wait_ready();                           // attende che la bilancia sia pronta
@@ -65,12 +61,12 @@ void loop()
     if (dispenser.running())
     {                                           // quando il dispenser è attivato
         pumpCode = dispenser.run(scale.read()); // passa il peso al dispenser e ottiene il codice di pompa attiva
-        pumpController(pumpCode);               // gestione dele pompe
+        pumpCtrl.join(pumpCode, pumpCode);      // accende la pompa corrispondente
         lcd.programProgress(&dispenser);        // visualizza il progresso del programma attivo sul display LCD
     }
     else
     {
-        pumpController(OFF);           // spegne tuttto
+        pumpCtrl.set(OFF);             // spegne le pompe
         lcd.mainPage(prg, lvl.read()); // visualizza il programma selezionato e il livello di dosaggio
     }
 }
@@ -100,23 +96,8 @@ void executeProgram()
 // ferma il dispenser
 void stopProgram()
 {
-    pumpController(dispenser.stop());
+    pumpCtrl.set(dispenser.stop()); // spegne le pompe
     beep(3);
-}
-
-// scrive il valore nello SHIFT REGISTER per accendere i led e le pompe.
-// @param code 4bit codice della pompa attiva 0x0000
-uint8_t pumpController(uint8_t code)
-{
-    /** Aggrega le informazioni sul programma di lavaggio e sul livello di dosaggio, restituendo un byte */
-    uint8_t led = code << 4;    // passa i primi 4 bit a destra del byte: LEVEL.
-    uint8_t value = led + code; //  aggiunge al byte le cifre di sinistra: PROGRAM
-
-    digitalWrite(latch, LOW);               // attiva la scrittura dei dati (quando è LOW)
-    shiftOut(data, clock, MSBFIRST, value); // scrive i dati  (MSBFIRST è l'ordine dei dati dalla cifra che pesa di più)
-    digitalWrite(latch, HIGH);              // disabilita la scrittura dei dati (quando è HIGH)
-
-    return value;
 }
 
 // fa suonare il Buzzer per 200 ms e attende 200 ms per un numero di volte passato come argomento
