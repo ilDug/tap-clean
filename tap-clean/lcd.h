@@ -28,7 +28,7 @@ public:
     bool init(String version); 
 
     // mostra il programma di lavaggio corrente e il livello di dosaggio
-    void mainPage(uint8_t progam, uint8_t level);
+    void mainPage(uint8_t progam, uint16_t level);
 
     // visualizza il progresso del programma attivo sul display LCD
     void programProgress(Dispenser *dispenser);

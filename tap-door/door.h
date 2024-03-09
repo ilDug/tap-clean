@@ -12,7 +12,7 @@ private:
     Stepper *motor;
     int CW;         // rotation side. cambiare con -1 per farlo girare dalláltra parte
     int CCW;        // l'inverso di cw
-    int SPEED = 8;  // velocità motore
+    int SPEED = 4;  // velocità motore
     int track = 600; // corsa di apertura totale
 
 public:
