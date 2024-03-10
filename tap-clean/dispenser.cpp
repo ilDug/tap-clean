@@ -78,6 +78,6 @@ uint8_t Dispenser::run(float weight) {
 // calcola il moltiplicatore per il dosaggio fino ad un massimo di 2
 float Dispenser::setMultiplier(uint16_t level) {
   float x = (float)level / 1023;
-  float y = x * 2;
+  float y = x * 1.5;
   return y;
 }

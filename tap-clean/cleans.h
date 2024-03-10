@@ -56,10 +56,10 @@ enum Flask {
 
 // dosaggi tipici in grammi.
 const float dosages[4] = {
-  30,  // DETERSIVO
-  40,  // ANTICALCARE
-  50,  // IGIENIZZANTE
-  60   // AMMORBIDENTE
+  60,  // DETERSIVO
+  50,  // ANTICALCARE
+  60,  // IGIENIZZANTE
+  50   // AMMORBIDENTE
 };
 
 #endif

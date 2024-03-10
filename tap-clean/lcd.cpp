@@ -11,7 +11,7 @@ bool DagLCD::init(String version) {
   lcd->print("DAG TAP-CLEAN");  // messaggio di benvenuto
   lcd->setCursor(0, 1);         // passa alla seconda riga
   lcd->print(version);          // stampa
-  delay(3000);                  // pausa
+  delay(1000);                  // pausa
   lcd->clear();                 // pulisce tutto lo schermo
   return true;
 }

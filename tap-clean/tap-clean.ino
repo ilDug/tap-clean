@@ -37,6 +37,7 @@ void setup() {
   pinMode(clock, OUTPUT);  // SHIFT REGISTER
   pinMode(latch, OUTPUT);  // SHIFT REGISTER
   pinMode(data, OUTPUT);   // SHIFT REGISTER
+  pumpController(OFF);     // spegne tutto
 
   pinMode(RUN_BTN_PIN, INPUT_PULLUP);  // button
   pinMode(PRG_BTN_PIN, INPUT_PULLUP);  // button
@@ -45,33 +46,17 @@ void setup() {
   pinMode(BUZZ_PIN, OUTPUT);  // buzzer
 
   lcd.init(version);  // inizializza il display LCD
-
-  //BILANCIA
-  scale.begin();
-  float calibrationValue;                // calibrazione della bilancia
-  calibrationValue = 1025.0;             // costante di calibrazione
-  unsigned long stabilizingtime = 2000;  // preciscion right after power-up can be improved by adding a few seconds of stabilizing time
-  boolean _tare = true;                  //set this to false if you don't want tare to be performed in the next step
-  scale.start(stabilizingtime, _tare);
-  if (scale.getTareTimeoutFlag()) {
-    Serial.println("Timeout, check MCU>HX711 wiring and pin designations");
-    _lcd.clear();
-    _lcd.home();
-    _lcd.print("scale error");
-    while (1) {};
-  } else {
-    scale.setCalFactor(calibrationValue);  // set calibration value (float)
-    Serial.println("Bilancia inizializzata");
-  }
+  scale_init();
 
   active = false;
   beep(1);
 }
 
 void loop() {
-  delay(300);
+  delay(50);
   lvl = analogRead(LVL_POT_PIN);          // legge il valore del potenziometro e lo inverte
   prgBtn.onPress(loopPrograms);           // loop dei programmi alla presione del tasto
+  prgBtn.onLongPress(scale_tare, 2000);
   runBtn.onPress(executeProgram);         // bottone del RUN
   runBtn.onLongPress(stopProgram, 1000);  // STOP PROGRAMMA
 
@@ -89,14 +74,19 @@ void loop() {
     lcd.programProgress(&dispenser);   // visualizza il progresso del programma attivo sul display LCD
 
   } else {
-    if(active){
+    if (active) {
       beep(3);
       active = false;
     }
     pumpController(OFF);     // spegne tutto
     lcd.mainPage(prg, lvl);  // visualizza il programma selezionato e il livello di dosaggio
+    // _lcd.clear();
+    // _lcd.home();
+    // _lcd.print(weight);
   }
 }
+
+
 
 // cambia a rotazione il programma da attivare  e lo salva nella variabile globale prg
 void loopPrograms() {
@@ -129,13 +119,20 @@ void stopProgram() {
 // @param code 4bit codice della pompa attiva 0x0000
 uint8_t pumpController(uint8_t code) {
   /** Aggrega le informazioni sul programma di lavaggio e sul livello di dosaggio, restituendo un byte */
-  uint8_t led = code << 4;     // passa i primi 4 bit a destra del byte: LEVEL.
-  uint8_t value = led + code;  //  aggiunge al byte le cifre di sinistra: PROGRAM
+  uint8_t led = code;
+  led = led << 4;
+  uint8_t value = (led | code);  //  aggiunge al byte le cifre di sinistra: PROGRAM
+
+  Serial.print("led = ");
+  Serial.println(led, BIN);
+  Serial.print("code = ");
+  Serial.println(code, BIN);
+  Serial.print("value = ");
+  Serial.println(value, BIN);
 
   digitalWrite(latch, LOW);                // attiva la scrittura dei dati (quando è LOW)
   shiftOut(data, clock, MSBFIRST, value);  // scrive i dati  (MSBFIRST è l'ordine dei dati dalla cifra che pesa di più)
   digitalWrite(latch, HIGH);               // disabilita la scrittura dei dati (quando è HIGH)
-
   return value;
 }
 
@@ -151,4 +148,28 @@ void beep(int n, int duration = 300) {
     digitalWrite(BUZZ_PIN, LOW);
     delay(delayTime);
   }
+}
+
+void scale_init() {
+  //BILANCIA
+  scale.begin();
+  float calibrationValue;                // calibrazione della bilancia
+  calibrationValue = 1025.0;             // costante di calibrazione
+  unsigned long stabilizingtime = 1000;  // preciscion right after power-up can be improved by adding a few seconds of stabilizing time
+  boolean _tare = true;                  //set this to false if you don't want tare to be performed in the next step
+  scale.start(stabilizingtime, _tare);
+  if (scale.getTareTimeoutFlag()) {
+    Serial.println("Timeout, check MCU>HX711 wiring and pin designations");
+    _lcd.clear();
+    _lcd.home();
+    _lcd.print("scale error");
+    while (1) {};
+  } else {
+    scale.setCalFactor(calibrationValue);  // set calibration value (float)
+    Serial.println("Bilancia inizializzata");
+  }
+}
+
+void scale_tare(){
+  scale.tare();
 }
