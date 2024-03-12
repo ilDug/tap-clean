@@ -4,12 +4,13 @@
 
 #include "Arduino.h"
 #include "cleans.h"
-
-
+#include "dag-timer.h"
 
 class Dispenser {
 
 private:
+  DagTimer tmr;
+
   // stato del programma
   bool active = false;
 

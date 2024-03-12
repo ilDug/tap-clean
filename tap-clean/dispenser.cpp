@@ -1,7 +1,8 @@
 #include "Arduino.h"
 #include "dispenser.h"
 
-Dispenser::Dispenser() {
+Dispenser::Dispenser()
+  : tmr() {
 }
 
 bool Dispenser::running() {
@@ -14,6 +15,8 @@ void Dispenser::start(uint8_t program, uint16_t level, float _tare) {
   multiplier = setMultiplier(level);
   tare = _tare;
   completion = 0;
+  tmr.init(1000 * 60 * 3, false);  // inizializza il timer di sicurezza che fa spegnere le pompe dopo il suo clock
+
 
   // legge dal programma da quale flask deve pompare
   flasks[DETERSIVO] = bitRead(prg, DETERSIVO);
@@ -35,6 +38,7 @@ uint8_t Dispenser::stop() {
 uint8_t Dispenser::run(float weight) {
   if (!active) return OFF;  // se non è attivo non fa nulla
 
+  if(tmr.exhausted()) stop();
   /**
     seleziona ed incrementa la flask attiva di volta in volta
     la flask diventa 0 se è esclusa dal programma
@@ -68,7 +72,7 @@ uint8_t Dispenser::run(float weight) {
 
   if (full) {
     flasks[activeFlask] = 0;  // segna il flask come completato
-    tare =  weight;     // azzera la tara
+    tare = weight;            // azzera la tara
     return OFF;               // disattiva la pompa
   } else {
     return pumps[activeFlask];  // attiva la pompa corrispondente alla flask attiva
