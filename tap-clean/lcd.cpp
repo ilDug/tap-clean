@@ -17,6 +17,7 @@ bool DagLCD::init(String version) {
 }
 
 void DagLCD::mainPage(uint8_t program, uint16_t level) {
+  lcd->backlight();                         // accende lo sfondo
   lcd->clear();                             // cancella tutto lo schermo
   lcd->home();                              // prima riga e prima colonna
   lcd->print(programDescription(program));  // stampa la descrizione del programma
@@ -65,4 +66,13 @@ void DagLCD::programProgress(Dispenser *dispenser) {
     bar = bar + "=";  // riempie la barra con i caratteri '+'
   }
   lcd->print(bar);  // stampa la barra
+}
+
+
+void DagLCD::lockPage(String version) {
+  lcd->noBacklight();                  // spegne lo sfondo
+  lcd->home();                         // si posrta in prima riga
+  lcd->print("LOCKED XXX");            // messaggio di benvenuto
+  lcd->setCursor(0, 1);                // passa alla seconda riga
+  lcd->print("TAP-CLEAN " + version);  // stampa il messaggio
 }

@@ -33,6 +33,9 @@ public:
     // visualizza il progresso del programma attivo sul display LCD
     void programProgress(Dispenser *dispenser);
 
+    // scheramta di blocco
+    void lockPage(String version);
+
 
 };
 

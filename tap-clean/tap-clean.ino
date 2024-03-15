@@ -46,6 +46,7 @@ void setup() {
   pinMode(LVL_POT_PIN, INPUT);         // potenziometro;
 
   pinMode(BUZZ_PIN, OUTPUT);  // buzzer
+  pinMode(DOOR_PIN, INPUT_PULLUP);
 
   lcd.init(version);  // inizializza il display LCD
   scale_init();
@@ -56,6 +57,19 @@ void setup() {
 
 void loop() {
   delay(50);
+
+  // se la porta è chiusa blocca tutto il loop
+  if (digitalRead(DOOR_PIN) == LOW) {
+
+    Serial.println("Lock DOOR");
+    lcd.lockPage(version);
+    if (dispenser.running()) {
+      stopProgram();
+    }
+    delay(1000);
+    return;
+  }
+
   lvl = analogRead(LVL_POT_PIN);  // legge il valore del potenziometro e lo inverte
   prgBtn.onPress(loopPrograms);   // loop dei programmi alla presione del tasto
   prgBtn.onLongPress(scale_tare, 2000);

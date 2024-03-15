@@ -19,3 +19,6 @@ const int SCALE_CLOCK_PIN = 12;  // pin del clock della bilancia
 
 // BUZZER
 const int BUZZ_PIN = 2;  // pin del buzzer
+
+// door
+const int DOOR_PIN = 4; // pin dell chiusura porta
