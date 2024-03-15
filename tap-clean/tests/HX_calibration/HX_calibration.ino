@@ -9,8 +9,8 @@
 
 HX711 myScale;
 
-uint8_t dataPin = 0;
-uint8_t clockPin = 0;
+const int SCALE_DATA_PIN = A0;  // pin dei dati della bilancia
+const int SCALE_CLOCK_PIN = 12; // pin del clock della bilancia
 
 uint32_t start, stop;
 volatile float f;
@@ -18,13 +18,13 @@ volatile float f;
 
 void setup()
 {
-  Serial.begin(115200);
+  Serial.begin(9600);
   Serial.println(__FILE__);
   Serial.print("LIBRARY VERSION: ");
   Serial.println(HX711_LIB_VERSION);
   Serial.println();
 
-  myScale.begin(dataPin, clockPin);
+  myScale.begin(SCALE_DATA_PIN, SCALE_CLOCK_PIN);
 }
 
 void loop()
